@@ -1,0 +1,141 @@
+import static java.lang.System.*;
+import java.util.*;
+import java.io.*;
+                                      
+public class Trig_IDs
+{
+   static int numOpenPar(String id) //returns number of open parenthases
+   {
+      int openPar = 0;
+      for (int i = 0; i < id.length(); i++)
+      {
+         if (id.substring(i, i + 1).equals("("))
+         {
+            openPar++;
+         }
+      }
+      return openPar;
+   }
+   
+   static int numClosedPar(String id) //returns number of closed parenthases
+   {
+      int closedPar = 0;
+      for (int i = 0; i < id.length(); i++)
+      {
+         if (id.substring(i, i + 1).equals(")"))
+         {
+            closedPar++;
+         }
+      }
+      return closedPar;
+   }
+   
+   static int indexOfMatchingParenthasis(String id, int indexOfOpenPar)
+   {//returns index of the closed parenthase that matches the given open parenthase
+      int indexMatch = -1, parNum = 0;
+      for (int i = indexOfOpenPar + 1; i < id.length(); i++)
+      {
+         if (parNum == 0 && id.substring(i, i + 1).equals(")"))
+         {
+            indexMatch = i;
+            break;
+         }
+         if (id.substring(i, i + 1).equals("("))
+         {
+            parNum++;
+         }
+         if (id.substring(i, i + 1).equals(")"))
+         {
+            parNum = parNum - 1;
+         }
+      }
+      return indexMatch;
+   }
+   
+   static int numMajorParGroups(String id) 
+   {//return the number of parenthase pairs that have other parenthase pairs inside of them
+      int majorPar = 0;
+      for (int i = 0; i < id.length(); i++)
+      {
+         if (id.substring(i, i + 1).equals("("))
+         {
+            for (int j = i + 1; j < indexOfMatchingParenthasis(id, i); j++)
+            {
+               if (id.substring(j, j + 1).equals("("))
+               {
+                  majorPar++;
+                  break;
+               }
+            }
+         }
+      }
+      return majorPar;
+   }
+   
+   static boolean isMajorParGroup(String id, int indexOfOpenPar)
+   {//returns true of a given parenthase (and its pair) is major (or has a parenthase pair inside of it)
+      for (int i = indexOfOpenPar + 1; i < indexOfMatchingParenthasis(id, indexOfOpenPar); i++)
+      {
+         if (id.substring(i, i + 1).equals("("))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   
+   static int indexOfMidMajorOpenPar(String id)
+   {//returns index of the open parenthese of the middle-most open parenthase pair
+      int index = -1, numMajorOpenFound = 0;
+      for (int i = 0; i < id.length() && numOpenFound < numMajorParGroups(id); i++)
+      {
+         if (id.substring(i, i + 1).equals("(") && isMajorParGroup(id, i))
+         {
+            numMajorOpenFound++;
+         }
+         if (numOpenFound == numMajorParGroups(id))
+         {
+            index = i;
+         }
+      }
+      return index;
+   }
+   
+   static int numMinorParGroupsBetween(String id, int indexOpenMajor, int indexClosedMajor)
+   {//returns the number of mior parenthese groups between a given major parenthese pair
+   //make sure it's the innermost major parenthese group
+      int numMinor = 0;
+      for (int i = indexOpenMajor; i < indexClosedMajor; i++)
+      {
+         if (id.substring(i, i + 1).equals("("))
+         {
+            numMinor++;
+         }
+      }
+      return numMinor;
+   }
+   
+   static boolean isValid(String id, int openPar, int closedPar)
+   {//not finished yet, will be used to tell if the id entered by the user is valid
+      if (openPar == closedPar)
+      {
+         return true;
+      }
+      return false;
+   }
+   
+   /*static boolean isSimplified(String id)
+   {//will be the main thing in the while loop that checks to see if we ned to keep simplifying
+      
+   }*/
+   
+    public static void main(String[] args)
+    {
+      Scanner scan = new Scanner(in);
+      String id;
+      out.print("Enter ID seperated by perenthases: ");
+      id = scan.nextLine();
+      out.println("\n" + indexOfMidOpenPar(id));
+    }
+}    
